@@ -12,10 +12,12 @@ st.title('CSV Analysis Tool')
 uploaded_file = st.file_uploader('Upload your CSV file', type='csv')
 
 if uploaded_file:
-    Analyser = data_analist(uploaded_file)
+    file_contents = uploaded_file.read()
+    Analyser = data_analist(io.BytesIO(file_contents))
+    st.session_state['file_contents'] = file_contents
     st.write('### Data preview')
     st.dataframe(Analyser.clean)
-    st.write(f'   from ML_Analysis import ML**Columns:** {list(Analyser.clean.columns)}')
+    st.write(f' **Columns:** {list(Analyser.clean.columns)}')
 
     # sidebar menu
     with st.sidebar:
