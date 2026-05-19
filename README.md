@@ -1,4 +1,4 @@
-# # CSV Analysis Tool
+# # Excel For Begginers
 
 A Python data analysis pipeline for CSV files.
 
