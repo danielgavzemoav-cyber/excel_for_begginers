@@ -78,7 +78,23 @@ class data_analist:
         plt.show()
         plt.close()
 
+    def our_plot_scat_error_both(self,stat1,stat2,stat1_err,stat2_err):
+        sns.scatterplot(data = self.clean, x = stat1, y = stat2, s = 1)
+        plt.errorbar(self.clean[stat1],self.clean[stat2],xerr=self.clean[stat1_err],yerr=self.clean[stat2_err],fmt='none',ecolor='red')
+        plt.show()
+        plt.close()
 
+    def our_plot_scat_error_x(self,stat1,stat2,stat1_err):
+        sns.scatterplot(data = self.clean, x = stat1, y = stat2, s = 1)
+        plt.errorbar(self.clean[stat1],self.clean[stat2],xerr=self.clean[stat1_err],fmt='none',ecolor='red')
+        plt.show()
+        plt.close()
+
+    def our_plot_scat_error_y(self, stat1, stat2, stat2_err):
+        sns.scatterplot(data=self.clean, x=stat1, y=stat2, s=1)
+        plt.errorbar(self.clean[stat1], self.clean[stat2], yerr=self.clean[stat2_err],fmt='none', ecolor='red')
+        plt.show()
+        plt.close()
     def our_boxplot(self,stat1):
         sns.boxplot(data = self.clean[[stat1]])
         plt.show()

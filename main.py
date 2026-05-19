@@ -1,16 +1,19 @@
 #main.py
 from fittings import Fits
-
+from ML_Analysis import ML
 from float_analysis import data_analist
 ### inserting the data
 filepath = input('Enter file path of your CSV: ')
 Analyser = data_analist(filepath)
+ml = ML(filepath)
+
 
 while True:
     print('\n Choose Category: ')
     print('1: Statistics')
     print('2: Columns operations')
     print('3: Plotting')
+    print('4: Machine Learning')
     print('q: Quit')
     category = str(input('\nEnter your choice: '))
 
@@ -155,16 +158,55 @@ while True:
                     if way == 'q':
                         break
                     elif way == '1':
-                        try:
-                            Analyser.our_plot_scat(col1, col2)
-                        except KeyError:
-                            print('Column not found, please try again')
+                        print('\nWould you want errorbars')
+                        print('1: No')
+                        print('2: Yes, on x axis')
+                        print('3: Yes, on y axis')
+                        print('4: Yes, on both axis')
+                        print('q: Back to main menu')
+                        err = str(input('\nEnter your choice: '))
+                        if err == 'q':
+                            break
+                        elif err == '1':
+                            try:
+                                Analyser.our_plot_scat(col1, col2)
+                            except KeyError:
+                                print('Data not found, please try again')
+                        elif err == '2':
+                            col1_err = input('\nWhat data for x axis error? :  ')
+                            try:
+                                Analyser.our_plot_scat_error_x(col1, col2,col1_err)
+                            except KeyError:
+                                print('Data not found, please try again')
+                        elif err == '3':
+                            col2_err = input('\nWhat data for y axis error? :  ')
+                            try:
+                                Analyser.our_plot_scat_error_y(col1, col2, col2_err)
+                            except KeyError:
+                                print('Data not found, please try again')
+                        elif err == '4':
+                            col1_err = input('\nWhat data for x axis error? :  ')
+                            col2_err = input('\nWhat data for y axis error? :  ')
+                            try:
+                                Analyser.our_plot_scat_error_both(col1, col2,col1_err, col2_err)
+                            except KeyError:
+                                print('Data not found, please try again')
+                        else:
+                            print('Invalid choice, please try again')
                     elif way == '2':
-                        fit = Fits(Analyser.clean,col1,col2)
-                        print(fit.x)
-                        print(fit.y)
-                        print(fit.x.isnull().sum())  # how many NaN in x
-                        print(fit.y.isnull().sum())
+
+                        err_choice = input('\nDo you want error bars? (y/n): ')
+                        if err_choice == 'y':
+                            print('\nThese are the float columns', list(Analyser.clean.columns))
+                            x_err = input('\nWhat column for x error? (press enter to skip): ')
+                            y_err = input('\nWhat column for y error? (press enter to skip): ')
+                            x_err = x_err if x_err else None
+                            y_err = y_err if y_err else None
+                        else:
+                            x_err = None
+                            y_err = None
+
+                        fit = Fits(Analyser.clean, col1, col2, x_err=x_err, y_err=y_err)
                         while True:
                             print('\nWhat fit would you like to plot?')
                             print('1: Polynomial')
@@ -253,6 +295,34 @@ while True:
                     print('Column not found, please try again')
             else:
                 print('Invalid choice, please try again')
+    elif category == '4':
+        print('\nWhat ML method would you like to use?')
+        print('1: Linear_Regression')
+        print('2: ForestIsolation')
+        print('q: Back to main menu')
+        ML_method = str(input('\nEnter your choice: '))
+        if ML_method == 'q':
+            break
+        elif ML_method == '1':
+            print('\nThese are the float columns', list(Analyser.clean.columns))
+            col1 = input('\nWhat column do you want to use? :  ')
+            col2 = input('\nWhat other column do you want to use? :  ')
+            degree = int(input('\nWhat degree do you want to use? :  '))
+            try:
+                ml.linear_regression([col1], col2, degree)
+            except KeyError:
+                print('Column not found, please try again')
+        elif ML_method == '2':
+            print('\nThese are the float columns', list(Analyser.clean.columns))
+            col1 = input('\nWhat column do you want to use? :  ')
+            col2 = input('\nWhat other column do you want to use? :  ')
+            try:
+                ml.Anomalie([col1], col2)
+            except KeyError:
+                print('Column not found, please try again')
+        else:
+            print('Invalid choice, please try again')
+
     else:
         print('Invalid choice, please try again')
 

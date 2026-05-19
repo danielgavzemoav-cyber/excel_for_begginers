@@ -5,23 +5,24 @@ from scipy.optimize import curve_fit
 
 
 class Fits:
-    def __init__(self,data,x_col,y_col):
+    def __init__(self,data,x_col,y_col,x_err=None,y_err=None):
         self.x = data[x_col]
         self.y = data[y_col]
         self.x_col = x_col
         self.y_col = y_col
+        self.x_err = data[x_err] if x_err else None
+        self.y_err = data[y_err] if y_err else None
+
     def polynomial(self,deg,title):
         fit_coefficient = np.polyfit(self.x,self.y,deg)
         x_smooth = np.linspace(self.x.min(),self.x.max(),100)
         y_smooth = np.polyval(fit_coefficient,x_smooth)
-        plt.scatter(self.x,self.y,color = 'red',label='Data')
+        plt.errorbar(self.x,self.y,xerr=self.x_err,yerr=self.y_err, fmt='o',color = 'red',label='Data')
         plt.plot(x_smooth, y_smooth, color='blue', label=f'Fit: {np.poly1d(np.round(fit_coefficient, 3))}')
         plt.xlabel(self.x_col)
         plt.ylabel(self.y_col)
         plt.title(title)
         plt.legend()
-        plt.show()
-        plt.close()
 
     def polyloglog(self, deg, title):
         if (self.x <= 0).any() or (self.y <= 0).any():
@@ -31,7 +32,7 @@ class Fits:
         fit_coefficient = np.polyfit(self.x, self.y, deg)
         x_smooth = np.linspace(self.x.min(), self.x.max(), 100)
         y_smooth = np.polyval(fit_coefficient, x_smooth)
-        plt.scatter(self.x, self.y, color='red', label='Data')
+        plt.errorbar(self.x,self.y,xerr=self.x_err,yerr=self.y_err, fmt='o',color = 'red',label='Data')
         coeffs = np.round(fit_coefficient, 3)
         plt.plot(x_smooth, y_smooth, color='blue', label=f'Fit: {np.poly1d(coeffs)}')
         plt.xlabel(self.x_col)
@@ -39,8 +40,6 @@ class Fits:
         plt.loglog()
         plt.title(title)
         plt.legend()
-        plt.show()
-        plt.close()
 
     def exponential(self,title,p0 = None):
         if p0 is None:
@@ -50,15 +49,13 @@ class Fits:
         fit_coefficient,_ = curve_fit(exponential_fit, self.x,self.y, p0=p0)
         y_fit = exponential_fit(self.x,*fit_coefficient)
 
-        plt.scatter(self.x,self.y,color = 'red', label= 'Data')
+        plt.errorbar(self.x,self.y,xerr=self.x_err,yerr=self.y_err, fmt='o',color = 'red',label='Data')
         a, b, c = np.round(fit_coefficient, 3)
         plt.plot(self.x, y_fit, color='blue', label=f'Fit: {a}*exp(-{b}*(x-{c}))')
         plt.title(title)
         plt.xlabel(self.x_col)
         plt.ylabel(self.y_col)
         plt.legend()
-        plt.show()
-        plt.close()
     def exponentiallog(self,title,p0=None):
         if p0 is None:
             p0 = [1,1,1]
@@ -70,7 +67,7 @@ class Fits:
         fit_coefficient,_ = curve_fit(exponential_fit, self.x,self.y, p0=p0)
         y_fit = exponential_fit(self.x,*fit_coefficient)
 
-        plt.scatter(self.x,self.y,color = 'red', label= 'Data')
+        plt.errorbar(self.x,self.y,xerr=self.x_err,yerr=self.y_err, fmt='o',color = 'red',label='Data')
         a, b, c = np.round(fit_coefficient, 3)
         plt.plot(self.x, y_fit, color='blue', label=f'Fit: {a}*exp(-{b}*(x-{c}))')
         plt.title(title)
@@ -78,8 +75,7 @@ class Fits:
         plt.ylabel(self.y_col)
         plt.semilogy()
         plt.legend()
-        plt.show()
-        plt.close()
+
 
     def trigonometric(self,title,p0=None):
         if p0 is None:
@@ -89,15 +85,13 @@ class Fits:
         fit_coefficient,_ = curve_fit(trigonometric_fit, self.x,self.y,p0 = p0)
         y_fit = trigonometric_fit(self.x,*fit_coefficient)
 
-        plt.scatter(self.x,self.y,color = 'red',label = 'Data')
+        plt.errorbar(self.x,self.y,xerr=self.x_err,yerr=self.y_err, fmt='o',color = 'red',label='Data')
         a, b, c, d = np.round(fit_coefficient, 3)
         plt.plot(self.x, y_fit, color='blue', label=f'Fit: {a}*sin({b}*x+{c})+{d}')
         plt.title(title)
         plt.xlabel(self.x_col)
         plt.ylabel(self.y_col)
         plt.legend()
-        plt.show()
-        plt.close()
 
     def Fast_FT(self, title):
         ts = self.x.iloc[1] - self.x.iloc[0]
@@ -112,8 +106,6 @@ class Fits:
         plt.xlabel('Frequency (Hz)')
         plt.ylabel('Magnitude')
         plt.title(title)
-        plt.show()
-        plt.close()
 
 
 
