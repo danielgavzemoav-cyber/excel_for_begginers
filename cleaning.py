@@ -4,8 +4,11 @@ import pandas as pd
 import numpy as np
 
 def load_clean_csv(filepath):
-    raw = pd.read_csv(filepath, header=None)
-
+    try:
+        raw = pd.read_csv(filepath, header=None,on_bad_lines='skip')
+    except TypeError:
+        # older pandas versions
+        raw = pd.read_csv(filepath, header=None, error_bad_lines=False)
     for col_name, col_data in raw.items():
         if pd.to_numeric(col_data, errors='coerce').notna().mean() < 0.5:
             continue

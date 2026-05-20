@@ -43,24 +43,27 @@ class Fits:
 
     def exponential(self,title,p0 = None):
         if p0 is None:
-            p0 = [1,1,1]
-        def exponential_fit(x,a,b,c):
-            return a * np.exp(-b * (x - c))
+            p0 =  [self.y.max() - self.y.min(), 100, self.x.min(), -self.y.min()]
+        def exponential_fit(x,a,b,c,d):
+            return a * np.exp(-b * (x - c))-d
         fit_coefficient,_ = curve_fit(exponential_fit, self.x,self.y, p0=p0)
         y_fit = exponential_fit(self.x,*fit_coefficient)
 
-        plt.errorbar(self.x,self.y,xerr=self.x_err,yerr=self.y_err, fmt='o',color = 'red',label='Data')
-        a, b, c = np.round(fit_coefficient, 3)
-        plt.plot(self.x, y_fit, color='blue', label=f'Fit: {a}*exp(-{b}*(x-{c}))')
+        a, b, c,d = np.round(fit_coefficient, 3)
+        plt.plot(self.x, y_fit, color='blue', label=f'Fit: {a}*exp(-{b}*(x-{c}))-{d}',zorder = 2)
+        plt.errorbar(self.x, self.y, xerr=self.x_err, yerr=self.y_err, fmt='o', color='red', label='Data',zorder = 1)
         plt.title(title)
         plt.xlabel(self.x_col)
         plt.ylabel(self.y_col)
         plt.legend()
+        #plt.show()
+        #plt.close()
+
     def exponentiallog(self,title,p0=None):
         if p0 is None:
             p0 = [1,1,1]
         def exponential_fit(x,a,b,c):
-            return a * np.exp(-b * (x - c))
+            return a * np.exp(-b * x)-c
         if (self.y<=0).any():
             print('semilogy plot requires all y values to be positive')
             return
@@ -69,7 +72,7 @@ class Fits:
 
         plt.errorbar(self.x,self.y,xerr=self.x_err,yerr=self.y_err, fmt='o',color = 'red',label='Data')
         a, b, c = np.round(fit_coefficient, 3)
-        plt.plot(self.x, y_fit, color='blue', label=f'Fit: {a}*exp(-{b}*(x-{c}))')
+        plt.plot(self.x, y_fit, color='blue', label=f'Fit: {a}*exp(-{b}*x)-{c}')
         plt.title(title)
         plt.xlabel(self.x_col)
         plt.ylabel(self.y_col)
@@ -87,7 +90,7 @@ class Fits:
 
         plt.errorbar(self.x,self.y,xerr=self.x_err,yerr=self.y_err, fmt='o',color = 'red',label='Data')
         a, b, c, d = np.round(fit_coefficient, 3)
-        plt.plot(self.x, y_fit, color='blue', label=f'Fit: {a}*sin({b}*x+{c})+{d}')
+        plt.plot(self.x, y_fit, label=f'Fit: {a}*sin({b}*x+{c})+{d}')
         plt.title(title)
         plt.xlabel(self.x_col)
         plt.ylabel(self.y_col)

@@ -244,7 +244,7 @@ while True:
                                 title = str(input('\nWhat title do you want for the plot?: '))
                                 guess = input('\nDo you want to provide initial guesses? (y/n): ')
                                 if guess == 'y':
-                                    p0 = list(map(float, input('Enter 3 values separated by commas (a,b,c): ').split(',')))
+                                    p0 = list(map(float, input('Enter 4 values separated by commas (a,b,c,d): ').split(',')))
                                 else:
                                     p0 = None
                                 print('What scale would you like to use?')

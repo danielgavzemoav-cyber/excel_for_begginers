@@ -74,7 +74,7 @@ class data_analist:
 
 
     def our_plot_scat(self,stat1,stat2):
-        sns.scatterplot(data = self.clean, x = stat1, y = stat2,s = 1)
+        sns.scatterplot(data = self.clean, x = stat1, y = stat2,s = 20)
         plt.show()
         plt.close()
 

@@ -14,6 +14,8 @@ uploaded_file = st.file_uploader('Upload your CSV file', type='csv')
 if uploaded_file:
     file_contents = uploaded_file.read()
     Analyser = data_analist(io.BytesIO(file_contents))
+    st.write(list(Analyser.clean.columns))
+    st.write(Analyser.clean['Time(s)'].is_monotonic_increasing)
     st.session_state['file_contents'] = file_contents
     st.write('### Data preview')
     st.dataframe(Analyser.clean)
@@ -139,7 +141,7 @@ if uploaded_file:
                 p0_input = st.checkbox('Provide initial guesses')
                 if p0_input:
                     if fit_type in ['Exponential', 'Exponential log']:
-                        p0_str = st.text_input('Enter 3 values (a,b,c)')
+                        p0_str = st.text_input('Enter 4 values (a,b,c,d)')
                         if p0_str:
                             p0 = list(map(float, p0_str.split(',')))
                     elif fit_type == 'Trigonometric':
@@ -162,6 +164,10 @@ if uploaded_file:
                                         fmt='o', markersize=point_size / 10, color='red')
                 else:
                     fit = Fits(Analyser.clean, col1, col2, x_err=x_err, y_err=y_err)
+                    st.write('x min:', Analyser.clean[col1].min())
+                    st.write('x max:', Analyser.clean[col1].max())
+                    st.write('y min:', Analyser.clean[col2].min())
+                    st.write('y max:', Analyser.clean[col2].max())
                     if fit_type == 'Polynomial':
                         fit.polynomial(degree, title)
                     elif fit_type == 'Exponential':
