@@ -37,12 +37,5 @@ def load_clean_csv(filepath):
     raw.dropna(axis=1, how='all', inplace=True)
     raw = raw.loc[:, raw.dtypes == float]
 
-    if raw.empty or raw.shape[1] == 0:
-        return raw
-
-    min_length = raw.count().min()
-
-    if pd.isna(min_length) or min_length == 0:
-        return raw
-
-    return raw.iloc[:int(min_length)]
+    min_length = int(raw.count().min())
+    return raw.iloc[:min_length]
