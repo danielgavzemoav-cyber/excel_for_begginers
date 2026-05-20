@@ -1,20 +1,23 @@
-### cleaning the data
-
-import pandas as pd
-import numpy as np
-
 def load_clean_csv(filepath):
-    try:
-        raw = pd.read_csv(filepath, header=None,on_bad_lines='skip')
-    except TypeError:
-        # older pandas versions
-        raw = pd.read_csv(filepath, header=None, error_bad_lines=False)
+    import io
+    import pandas as pd
+
+    if hasattr(filepath, 'read'):
+        content = filepath.read()
+        if isinstance(content, bytes):
+            content = content.decode('utf-8')
+    else:
+        with open(filepath, 'r') as f:
+            content = f.read()
+
+    lines = content.split('\n')
+    max_cols = max(len(line.split(',')) for line in lines if line.strip())
+    raw = pd.read_csv(io.StringIO(content), header=None, names=range(max_cols))
+
     for col_name, col_data in raw.items():
         if pd.to_numeric(col_data, errors='coerce').notna().mean() < 0.5:
             continue
-
         last_string_idx = 0
-
         for i, value in enumerate(col_data):
             try:
                 float(value)
@@ -22,19 +25,24 @@ def load_clean_csv(filepath):
                     raise ValueError
                 break
             except (ValueError, TypeError):
-                if pd.notna(value):  # only update if value is not NaN
+                if pd.notna(value):
                     last_string_idx = i
-
-
         header = col_data.iloc[last_string_idx]
         data = pd.to_numeric(col_data.iloc[last_string_idx + 1:], errors='coerce')
-        data = data.interpolate().reset_index(drop = True)
+        data = data.interpolate().reset_index(drop=True)
         data.name = header
-
         raw[col_name] = data
         raw.rename(columns={col_name: header}, inplace=True)
 
     raw.dropna(axis=1, how='all', inplace=True)
     raw = raw.loc[:, raw.dtypes == float]
+
+    if raw.empty or raw.shape[1] == 0:
+        return raw
+
     min_length = raw.count().min()
-    return raw.iloc[:min_length]
+
+    if pd.isna(min_length) or min_length == 0:
+        return raw
+
+    return raw.iloc[:int(min_length)]
