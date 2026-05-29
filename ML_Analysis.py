@@ -69,6 +69,12 @@ class ML:
         plt.xlabel(x_cols)
         plt.ylabel(y_col)
         plt.legend()
+        fig = plt.gcf()
+        return {
+            'normal_count': normal_mask.sum(),
+            'anomaly_count': anomaly_mask.sum(),
+            'fig': fig
+        }
 
 
 

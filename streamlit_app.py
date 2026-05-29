@@ -213,6 +213,8 @@ if uploaded_file:
             y_col = st.selectbox('Choose y column', list(Analyser.clean.columns), key='anom_y')
             contamination = st.slider('Expected % of anomalies',
                                               min_value=0.01, max_value=0.5, value=0.1)
+            fig = plt.gcf()
+
 
             if st.button('Run'):
                 results = ml.Anomalie([x_col], y_col, contamination=contamination)
