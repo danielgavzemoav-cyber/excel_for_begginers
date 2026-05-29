@@ -96,6 +96,7 @@ class Fits:
         plt.ylabel(self.y_col)
         plt.legend()
 
+
     def Fast_FT(self, title):
         ts = self.x.iloc[1] - self.x.iloc[0]
         fft_result = np.fft.fft(self.y)

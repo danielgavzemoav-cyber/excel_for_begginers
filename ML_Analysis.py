@@ -65,11 +65,10 @@ class ML:
         anomaly_mask = model_anomalies == - 1
 
         plt.scatter(x[normal_mask].values, y[normal_mask], color='blue', label='Normal')
-        plt.scatter(x[anomaly_mask].values,y[anomaly_mask], color='red', label='All points')
+        plt.scatter(x[anomaly_mask].values,y[anomaly_mask], color='red', label='Anomaly')
         plt.xlabel(x_cols)
         plt.ylabel(y_col)
         plt.legend()
-
 
 
 

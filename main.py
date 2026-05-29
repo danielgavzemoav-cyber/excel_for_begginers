@@ -5,7 +5,7 @@ from float_analysis import data_analist
 ### inserting the data
 filepath = input('Enter file path of your CSV: ')
 Analyser = data_analist(filepath)
-ml = ML(filepath)
+ml = ML(Analyser.clean)
 
 
 while True:
